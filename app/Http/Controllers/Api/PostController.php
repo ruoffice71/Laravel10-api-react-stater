@@ -17,7 +17,7 @@ class PostController extends Controller
     {
         $this->middleware('permission:users.list|users.view|users.create|users.update|users.delete', ['only' => ['index']]);
         $this->middleware('permission:users.create', ['only' => ['create','store']]);
-        $this->middleware('permission:users.edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:users.update', ['only' => ['edit','update']]);
         $this->middleware('permission:users.delete', ['only' => ['destroy']]);
     }
 
