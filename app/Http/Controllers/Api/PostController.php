@@ -5,12 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:users.list|users.view|users.create|users.update|users.delete', ['only' => ['index']]);
+        $this->middleware('permission:users.create', ['only' => ['create','store']]);
+        $this->middleware('permission:users.update', ['only' => ['edit','update']]);
+        $this->middleware('permission:users.delete', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
