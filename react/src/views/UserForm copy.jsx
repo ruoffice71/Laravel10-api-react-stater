@@ -21,7 +21,8 @@ export default function UserForm() {
         name: '',
         email: '',
         password: '',
-        password_confirmation: ''
+        password_confirmation: '',
+        checkBoxes:checkBoxes
     })
     const [errors, setErrors] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -43,11 +44,9 @@ export default function UserForm() {
 
     const onSubmit = ev => {
         ev.preventDefault()
-        const userData = { user, checkBoxes };
         if (user.id) {
-            axiosClient.put(`/users/${user.id}`, userData)
-                .then((response) => {
-                    console.log(response.data.data);
+            axiosClient.put(`/users/${user.id}`, user)
+                .then(() => {
                     setNotification('User was successfully updated')
                     navigate('/users')
                 })

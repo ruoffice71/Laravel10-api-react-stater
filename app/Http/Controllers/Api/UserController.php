@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserResource;
-use App\Models\User;
 
 class UserController extends Controller
 {
@@ -53,13 +54,28 @@ class UserController extends Controller
      * @param \App\Models\User                     $user
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, User $user)
     {
-        $data = $request->validated();
-        if (isset($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
+        $data = $request->all();
+        // return response()->json([
+        //     'data'=>$data['user']['password'],
+        //     // 'data'=>$data['checkBoxes']['checkBox1'],
+
+        // ]);
+        if (isset($data['user']['password'])) {
+            $data['user']['password'] = bcrypt($data['user']['password']);
         }
-        $user->update($data);
+        $user->update($data['user']);
+
+        if ($data['checkBoxes']['checkBox1']) {
+            $user->givePermissionTo('users.list');
+        }
+        if ($data['checkBoxes']['checkBox2']) {
+            $user->givePermissionTo('users.view');
+        }
+        if ($data['checkBoxes']['checkBox3']) {
+            $user->givePermissionTo('users.create');
+        }
 
         return new UserResource($user);
     }
