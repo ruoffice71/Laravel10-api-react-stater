@@ -9,11 +9,16 @@ export default function UserForm() {
     const [selectAll, setSelectAll] = useState(false);
 
     // Create initial state for checkboxes
-    const numberOfCheckboxes = 9; // You can change this to the desired number of checkboxes
+    // const numberOfCheckboxes = 5; // You can change this to the desired number of checkboxes
     const initialState = {};
-    for (let i = 1; i <= numberOfCheckboxes; i++) {
-        initialState[`checkBox${i}`] = false;
-    }
+    initialState[`users_list`] = false;
+    initialState[`users_view`] = false;
+    initialState[`users_create`] = false;
+    initialState[`users_update`] = false;
+    initialState[`users_delete`] = false;
+    // for (let i = 1; i <= numberOfCheckboxes; i++) {
+    //     initialState[`checkBox${i}`] = false;
+    // }
     const [checkBoxes, setCheckBoxes] = useState(initialState);
 
     const [user, setUser] = useState({
@@ -32,8 +37,13 @@ export default function UserForm() {
             setLoading(true)
             axiosClient.get(`/users/${id}`)
                 .then(({ data }) => {
+                    const permissionArray=data.permissions;
+                    permissionArray.forEach(element => {
+                        checkBoxes[element]=true;
+                    });
                     setLoading(false)
                     setUser(data)
+                    setCheckBoxes(checkBoxes)
                 })
                 .catch(() => {
                     setLoading(false)
@@ -58,8 +68,9 @@ export default function UserForm() {
                     }
                 })
         } else {
-            axiosClient.post('/users', user)
-                .then(() => {
+            axiosClient.post('/users', userData)
+                .then((response) => {
+                    console.log(response.data.data);
                     setNotification('User was successfully created')
                     navigate('/users')
                 })
@@ -135,43 +146,31 @@ export default function UserForm() {
                                 </label>
                                 <div className="col-md-4 col-sm-6 col-12">
                                     <fieldset>
-                                        <legend>Personalia:</legend>
-                                        <label className="checkbox_label" htmlFor="checkBox1">Select 1
-                                            <input className="checkbox_input" type="checkbox" name="checkBox1" checked={checkBoxes.checkBox1} onChange={handleCheckBoxChange} />
+                                        <legend>User Read:</legend>
+                                        <label className="checkbox_label" htmlFor="users_list">List
+                                            <input className="checkbox_input" type="checkbox" name="users_list" checked={checkBoxes.users_list} onChange={handleCheckBoxChange} />
                                         </label>
-                                        <label className="checkbox_label" htmlFor="checkBox2">Select 2
-                                            <input className="checkbox_input" type="checkbox" name="checkBox2" checked={checkBoxes.checkBox2} onChange={handleCheckBoxChange} />
-                                        </label>
-                                        <label className="checkbox_label" htmlFor="checkBox3">Select 3
-                                            <input className="checkbox_input" type="checkbox" name="checkBox3" checked={checkBoxes.checkBox3} onChange={handleCheckBoxChange} />
+                                        <label className="checkbox_label" htmlFor="users_view">View
+                                            <input className="checkbox_input" type="checkbox" name="users_view" checked={checkBoxes.users_view} onChange={handleCheckBoxChange} />
                                         </label>
                                     </fieldset>
                                 </div>
                                 <div className="col-md-4 col-sm-6 col-12">
                                     <fieldset>
-                                        <legend>Personalia:</legend>
-                                        <label className="checkbox_label" htmlFor="checkBox4">Select 4
-                                            <input className="checkbox_input" type="checkbox" name="checkBox4" checked={checkBoxes.checkBox4} onChange={handleCheckBoxChange} />
+                                        <legend>User Write:</legend>
+                                        <label className="checkbox_label" htmlFor="users_create">Create
+                                            <input className="checkbox_input" type="checkbox" name="users_create" checked={checkBoxes.users_create} onChange={handleCheckBoxChange} />
                                         </label>
-                                        <label className="checkbox_label" htmlFor="checkBox5">Select 5
-                                            <input className="checkbox_input" type="checkbox" name="checkBox5" checked={checkBoxes.checkBox5} onChange={handleCheckBoxChange} />
-                                        </label>
-                                        <label className="checkbox_label" htmlFor="checkBox6">Select 6
-                                            <input className="checkbox_input" type="checkbox" name="checkBox6" checked={checkBoxes.checkBox6} onChange={handleCheckBoxChange} />
+                                        <label className="checkbox_label" htmlFor="users_update">Update
+                                            <input className="checkbox_input" type="checkbox" name="users_update" checked={checkBoxes.users_update} onChange={handleCheckBoxChange} />
                                         </label>
                                     </fieldset>
                                 </div>
                                 <div className="col-md-4 col-sm-6 col-12">
                                     <fieldset>
-                                        <legend>Personalia:</legend>
-                                        <label className="checkbox_label" htmlFor="checkBox7">Select 7
-                                            <input className="checkbox_input" type="checkbox" name="checkBox7" checked={checkBoxes.checkBox7} onChange={handleCheckBoxChange} />
-                                        </label>
-                                        <label className="checkbox_label" htmlFor="checkBox8">Select 8
-                                            <input className="checkbox_input" type="checkbox" name="checkBox8" checked={checkBoxes.checkBox8} onChange={handleCheckBoxChange} />
-                                        </label>
-                                        <label className="checkbox_label" htmlFor="checkBox9">Select 9
-                                            <input className="checkbox_input" type="checkbox" name="checkBox9" checked={checkBoxes.checkBox9} onChange={handleCheckBoxChange} />
+                                        <legend>User Delete:</legend>
+                                        <label className="checkbox_label" htmlFor="users_delete">Delete
+                                            <input className="checkbox_input" type="checkbox" name="users_delete" checked={checkBoxes.users_delete} onChange={handleCheckBoxChange} />
                                         </label>
                                     </fieldset>
                                 </div>

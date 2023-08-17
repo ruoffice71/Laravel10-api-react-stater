@@ -8,9 +8,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:users_list|users_create|users_update|users_delete', ['only' => ['index']]);
+        $this->middleware('permission:users_create', ['only' => ['create','store']]);
+        $this->middleware('permission:users_update', ['only' => ['edit','update']]);
+        $this->middleware('permission:users_delete', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,11 +37,38 @@ class UserController extends Controller
      * @param \App\Http\Requests\StoreUserRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUserRequest $request)
+    public function store(Request $request,)
     {
-        $data = $request->validated();
-        $data['password'] = bcrypt($data['password']);
-        $user = User::create($data);
+        $request->validate(
+            [
+                'user.name' => 'required|string|max:55',
+                'user.email' => 'required|email|unique:users,email',
+                'user.password' => [
+                    'required',
+                    Password::min(8)
+                        ->letters()
+                        ->symbols(),
+                ]
+            ]
+        );
+        $data = $request->all();
+        // return response()->json([
+        //     'data'=>$data['user']['password'],
+        //     // 'data'=>$data['checkBoxes']['checkBox1'],
+
+        // ]);
+        if (isset($data['user']['password'])) {
+            $data['user']['password'] = bcrypt($data['user']['password']);
+        }
+        $user = User::create($data['user']);
+
+        $permissions = [];
+        foreach ($data['checkBoxes'] as $key => $value) {
+            if ($value==true) {
+                $permissions[]=$key;
+            }
+        }
+        $user->givePermissionTo($permissions);
 
         return response(new UserResource($user) , 201);
     }
@@ -57,9 +94,10 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->all();
+
         // return response()->json([
-        //     'data'=>$data['user']['password'],
-        //     // 'data'=>$data['checkBoxes']['checkBox1'],
+        //     // 'data'=>$data['user']['password'],
+        //     // 'data'=>$data['checkBoxes']['users_list'],
 
         // ]);
         if (isset($data['user']['password'])) {
@@ -67,15 +105,14 @@ class UserController extends Controller
         }
         $user->update($data['user']);
 
-        if ($data['checkBoxes']['checkBox1']) {
-            $user->givePermissionTo('users.list');
+
+        $permissions = [];
+        foreach ($data['checkBoxes'] as $key => $value) {
+            if ($value==true) {
+                $permissions[]=$key;
+            }
         }
-        if ($data['checkBoxes']['checkBox2']) {
-            $user->givePermissionTo('users.view');
-        }
-        if ($data['checkBoxes']['checkBox3']) {
-            $user->givePermissionTo('users.create');
-        }
+        $user->syncPermissions($permissions);
 
         return new UserResource($user);
     }
