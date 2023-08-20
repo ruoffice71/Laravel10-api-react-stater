@@ -6,7 +6,6 @@ import {useStateContext} from "../context/ContextProvider.jsx";
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [permissionUsersCreate, setPermissionUsersCreate] = useState(false);
   const [permissions, setPermissions] = useState([]);
   const {setNotification} = useStateContext()
 //   const {user, setUser} = useStateContext();
@@ -39,7 +38,6 @@ export default function Users() {
       .then(({ data }) => {
         setLoading(false)
         setUsers(data.users)
-        setPermissionUsersCreate(data.permissionUsersCreate)
         setPermissions(data.permissions)
       })
       .catch(() => {

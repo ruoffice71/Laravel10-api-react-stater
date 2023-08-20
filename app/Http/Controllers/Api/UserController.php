@@ -31,9 +31,8 @@ class UserController extends Controller
     {
         $user=Auth::user();
         $permissions = $user->getAllPermissions()->pluck('name')??[];
-        $permissionUsersCreate=Auth::user()->can('users_list');
         $users=UserResource::collection(User::query()->orderBy('id', 'desc')->paginate(10));
-        return ['permissions'=>$permissions, 'permissionUsersCreate'=>$permissionUsersCreate, 'users'=>$users];
+        return ['permissions'=>$permissions, 'users'=>$users];
     }
 
     /**
