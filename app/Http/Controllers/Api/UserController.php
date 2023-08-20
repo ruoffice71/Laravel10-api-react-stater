@@ -9,12 +9,13 @@ use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Validation\Rules\Password;
+use Auth;
 
 class UserController extends Controller
 {
-
     function __construct()
     {
+        // dd($this->middleware('permission:users_list|users_create|users_update|users_delete', ['only' => ['index']]));
         $this->middleware('permission:users_list|users_create|users_update|users_delete', ['only' => ['index']]);
         $this->middleware('permission:users_create', ['only' => ['create','store']]);
         $this->middleware('permission:users_update', ['only' => ['edit','update']]);
@@ -28,7 +29,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::query()->orderBy('id', 'desc')->paginate(10));
+        $user=Auth::user();
+        $permissions = $user->getAllPermissions()->pluck('name')??[];
+        $permissionUsersCreate=Auth::user()->can('users_list');
+        $users=UserResource::collection(User::query()->orderBy('id', 'desc')->paginate(10));
+        return ['permissions'=>$permissions, 'permissionUsersCreate'=>$permissionUsersCreate, 'users'=>$users];
     }
 
     /**
