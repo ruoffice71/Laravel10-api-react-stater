@@ -31,25 +31,13 @@ export default function PostForm() {
         }, [])
     }
 
-    const onSubmit = e => {
-        e.preventDefault()
+    const onSubmit = ev => {
+        ev.preventDefault()
         post.user_id=user.id;
-
-        // const postData = { post, image };
-        const formData = new FormData();
-        formData.append('user_id', post.user_id);
-        formData.append('title', post.title);
-        formData.append('details', post.details);
-        if (image) {
-            formData.append('image', image, image.name);
-        }
+        const formData = { post, image };
         if (post.id) {
-            formData.append('_method', 'PATCH');
-            axiosClient.post(`/posts/${post.id}`, formData,{
-                headers: {'Content-Type': 'multipart/form-data'}
-            })
+            axiosClient.put(`/posts/${post.id}`, post)
             .then((response) => {
-                console.log(response.data);
                 setNotification('Post was successfully updated')
                 navigate('/posts')
             })
@@ -60,9 +48,10 @@ export default function PostForm() {
                 }
             })
         } else {
+            console.log(formData);
             axiosClient.post('/posts', formData)
             .then((response) => {
-                console.log(response.data);
+                console.log(response);
                 setNotification('Post was successfully created')
                 navigate('/posts')
             })
@@ -93,10 +82,9 @@ export default function PostForm() {
           </div>
         }
         {!loading && (
-          <form onSubmit={onSubmit} id="fileInput"  encType="multipart/form-data">
-            <input value={post.title} onChange={e => setPost({...post, title: e.target.value})} placeholder="Title"/>
-            <input value={post.details} onChange={e => setPost({...post, details: e.target.value})} placeholder="Details"/>
-            <input type="file" onChange={e => setImage(e.target.files[0])} />
+          <form onSubmit={onSubmit}  encType="multipart/form-data">
+            <input value={post.title} onChange={ev => setPost({...post, title: ev.target.value})} placeholder="Title"/>
+            <input value={post.details} onChange={ev => setPost({...post, details: ev.target.value})} placeholder="Details"/>
             <button className="btn">Save</button>
           </form>
         )}

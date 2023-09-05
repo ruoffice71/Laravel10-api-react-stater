@@ -23,10 +23,24 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules()
     {
+        // $data = $this->all();
+        // dump($data);
         return [
             'user_id' => 'required',
             'title' => 'required|string|max:55',
-            'details' => 'required'
+            'details' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            // Example validation for image upload
+        ];
+    }
+
+    // Optionally, you can customize error messages
+    public function messages()
+    {
+        return [
+            'title.required' => 'The title field is required.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
+            // Add more custom messages as needed
         ];
     }
 }

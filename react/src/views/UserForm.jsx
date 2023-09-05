@@ -57,7 +57,7 @@ export default function UserForm() {
         if (user.id) {
             axiosClient.put(`/users/${user.id}`, userData)
                 .then((response) => {
-                    console.log(response.data.data);
+                    console.log(response.data);
                     setNotification('User was successfully updated')
                     navigate('/users')
                 })
