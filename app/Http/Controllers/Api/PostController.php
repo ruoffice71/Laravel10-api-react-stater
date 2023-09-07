@@ -102,14 +102,9 @@ class PostController extends Controller
         // Retrieve the old image path
         $oldImagePath = $post->image;
 
-        // return response()->json([
-        //     'data'=>$oldImagePath,
-        //     // 'data'=>Storage::exists($oldImagePath),
-        // ]);
-
         // Delete the old image from storage if it exists
-        if ($oldImagePath && Storage::exists($oldImagePath)) {
-            Storage::delete($oldImagePath);
+        if ($oldImagePath && Storage::exists('public/'.$oldImagePath)) {
+            Storage::delete('public/'.$oldImagePath);
         }
 
         // Upload and save the new image
