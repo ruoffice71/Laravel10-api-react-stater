@@ -75,3 +75,29 @@ Make sure you have environment setup properly. You will need PHP8.1, composer an
 
 ## Frontend Installation With React Js Vite
 D:\Installed\laragon\www\Study\laravel-react-starter\react
+
+
+## Frontend Screenshots
+Url: http://localhost:3000/login
+
+![Laravel10ApiReactStater Sign In](https://github.com/ruoffice71/Laravel10-api-react-stater/blob/main/README/Screenshots/1.png)
+
+
+Url: http://localhost:3000/signup
+
+![Laravel10ApiReactStater Sign Up](https://github.com/ruoffice71/Laravel10-api-react-stater/blob/main/README/Screenshots/2.png)
+
+
+Url: http://localhost:3000/users
+
+![Laravel10ApiReactStater Users](https://github.com/ruoffice71/Laravel10-api-react-stater/blob/main/README/Screenshots/3.png)
+
+
+Url: http://localhost:3000/users/new
+
+![Laravel10ApiReactStater Add New User Form](https://github.com/ruoffice71/Laravel10-api-react-stater/blob/main/README/Screenshots/4.png)
+
+
+Url: http://localhost:3000/posts/new
+
+![Laravel10ApiReactStater Add New Post Form](https://github.com/ruoffice71/Laravel10-api-react-stater/blob/main/README/Screenshots/5.png)
